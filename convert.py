@@ -104,6 +104,7 @@ for shp in shp_files:
     logger.info("Converting %s", shp)
     translation_file = None
 
+    # translation_map is eval'd into the scope
     for reg, f in translation_map:
         if reg.match(shp) is not None:
             translation_file = f
@@ -143,6 +144,7 @@ osm_files = [
 ]
 
 for osm in osm_files:
+    # postprocess is eval'd into scope.
     for pattern, cb in postprocess:
         if pattern.match(osm):
             logger.info("Running post-process on %s", osm)

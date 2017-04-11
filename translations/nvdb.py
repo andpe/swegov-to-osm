@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """ A translation function for Trafikverket-NVDB to OSM. """
-import sys
+
 
 def countyToLetter(countyCode):
     countyMap = {
