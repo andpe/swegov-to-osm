@@ -9,7 +9,8 @@ translation_map = [
     (re.compile('.*Lan.*'), 'scb.py')
 ]
 
-
+# ogr2osm will not add relations automatically for some large ways (it seems)
+# so we'll have to do that by hand here instead.
 def add_missing_rels(f, id_file):
     """ Add missing relations to the osm file. """
 

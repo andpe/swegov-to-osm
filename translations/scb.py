@@ -35,6 +35,7 @@ def countyToLetter(countyCode):
 
 def filterTags(attrs):
     """ Translate from SCB SHP files to OSM properties. """
+    # Some default values.
     res = {
         'admin_level': '7',
         'boundary': 'administrative',
@@ -42,9 +43,14 @@ def filterTags(attrs):
     }
 
     res['name'] = attrs['KnNamn'] if attrs.get('KnNamn') else attrs.get('LnNamn')
+
+    # According to http://wiki.openstreetmap.org/wiki/Tag:boundary%3Dadministrative#admin_level
+    # admin_level should be 7 for municipalities and 4 for counties for Sweden.
     res['admin_level'] = '7' if attrs.get('KnKod') else '4'
+    # The reference code is the municipality code or county code from SCB.
     res['ref'] = attrs['KnKod'] if attrs.get('KnKod') else countyToLetter(attrs.get('LnKod'))
 
+    # Add this extra ref for the code for counties, since they will get translated into leters.
     if attrs.get('LnKod'):
         res['ref:se:scb'] = attrs.get('LnKod')
 

@@ -50,7 +50,8 @@ def filterTags(attrs):
     hasPrefix = False
 
     # Assign the highway tag as a best effort based on the data from
-    # trafikverket + nvdb
+    # trafikverket + nvdb, tries to follow the guidelines from
+    # http://wiki.openstreetmap.org/wiki/Key:highway
     if 'KLASS' in attrs and attrs['KLASS']:
         klass = int(attrs['KLASS'])
         if klass == 0:
