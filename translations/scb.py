@@ -50,7 +50,7 @@ def filterTags(attrs):
     # The reference code is the municipality code or county code from SCB.
     res['ref'] = attrs['KnKod'] if attrs.get('KnKod') else countyToLetter(attrs.get('LnKod'))
 
-    # Add this extra ref for the code for counties, since they will get translated into leters.
+    # Add this extra ref for the code for counties, since they will get translated into letters.
     if attrs.get('LnKod'):
         res['ref:se:scb'] = attrs.get('LnKod')
 
