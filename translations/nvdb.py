@@ -71,6 +71,9 @@ def filterTags(attrs):
         else:
             result['highway'] = 'unclassified'
 
+    if attrs.get('PRIMANV', False) is not False:
+        result['highway'] = 'cycleway'
+
     if 'HUVUDNR' in attrs and attrs['HUVUDNR']:
         prefix = ''
         if hasPrefix:

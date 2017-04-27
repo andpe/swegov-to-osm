@@ -3,11 +3,14 @@ import re
 
 translation_map = [
     (re.compile('.*NVDB_DKGatunamn.*'), 'nvdb.py'),
+    (re.compile('.*NVDB.*'), 'nvdb.py'),
     (re.compile('.*vgR.*'), 'nvdb.py'),
     (re.compile('.*riks.*'), 'lantmateriet.py'),
     (re.compile('.*Kommun.*'), 'scb.py'),
-    (re.compile('.*Lan.*'), 'scb.py')
+    (re.compile('.*Lan.*'), 'scb.py'),
+    (re.compile('.*ShapeVIS.*', 'shapevis.py'))
 ]
+
 
 # ogr2osm will not add relations automatically for some large ways (it seems)
 # so we'll have to do that by hand here instead.
@@ -29,7 +32,7 @@ def add_missing_rels(f, id_file):
             tag = way.find('tag', {'k': 'name'})
             if tag is not None:
                 name = tag.attrs['v']
-                #place = way.find('tag', {'k': 'place'}).attrs['v']
+                # place = way.find('tag', {'k': 'place'}).attrs['v']
                 adm = way.find('tag', {'k': 'admin_level'}).attrs['v']
                 ref = way.find('tag', {'k': 'ref'}).attrs['v']
 
@@ -60,7 +63,7 @@ def add_missing_rels(f, id_file):
                         )
                     )
                     r.append(b.new_tag('tag', k='type', v='boundary'))
-                    #r.append(b.new_tag('tag', k='place', v=place))
+                    # r.append(b.new_tag('tag', k='place', v=place))
                     r.append(b.new_tag('tag', k='name', v=name))
                     r.append(b.new_tag('tag', k='admin_level', v=adm))
                     r.append(b.new_tag('tag', k='ref', v=ref))
