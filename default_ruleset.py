@@ -8,7 +8,7 @@ translation_map = [
     (re.compile('.*riks.*'), 'lantmateriet.py'),
     (re.compile('.*Kommun.*'), 'scb.py'),
     (re.compile('.*Lan.*'), 'scb.py'),
-    (re.compile('.*ShapeVIS.*', 'shapevis.py'))
+    (re.compile('.*ShapeVIS.*'), 'shapevis.py')
 ]
 
 
