@@ -112,7 +112,9 @@ for shp in shp_files:
 
     # Open the log files to have somewhere to log.
     with open('stderr-%d.err' % run, 'w') as err, open('stdout-%d.log' % run, 'w') as std:
+        output_file = shp.split('/')[-1][:-3] + 'osm'
         args = "ogr2osm.py --positive-id --add-timestamp --add-version --idfile=%s --saveid=%s --debug-tags --verbose" % (batch_id_file, batch_id_file)
+        args += " --output=%s/%s" % (options.output_dir, output_file,)
         if translation_file is not None:
             args += ' -t %s' % translation_file
             logger.info("Using %s as translation file", translation_file)
