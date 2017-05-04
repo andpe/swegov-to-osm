@@ -23,4 +23,6 @@ def filterTags(attrs):
         elif bef >= 200:
             res['place'] = 'village'
 
+        res['population'] = str(bef)
+
     return res
