@@ -15,6 +15,10 @@ from os.path import exists
 import logging
 import re
 import uuid
+from queue import Queue
+from work import WorkerThread
+from multiprocessing import cpu_count
+
 
 DEBUG = True
 
@@ -98,10 +102,11 @@ with open(batch_id_file, 'w') as f:
     f.write('0')
     f.flush()
 
+threads = []
+workqueue = Queue()
 # Convert the files to OSM format by using ogr2osm.py.
 run = 0
 for shp in shp_files:
-    logger.info("Converting %s", shp)
     translation_file = None
 
     # translation_map is eval'd into the scope
@@ -113,27 +118,27 @@ for shp in shp_files:
     # Open the log files to have somewhere to log.
     with open('stderr-%d.err' % run, 'w') as err, open('stdout-%d.log' % run, 'w') as std:
         output_file = shp.split('/')[-1][:-3] + 'osm'
-        args = "ogr2osm.py --positive-id --add-timestamp --add-version --idfile=%s --saveid=%s --debug-tags --verbose" % (batch_id_file, batch_id_file)
+        args = "ogr2osm.py --positive-id --add-timestamp --add-version --id=%d --debug-tags --verbose" % (run * 2000000,)
         args += " --output=%s/%s" % (options.output_dir, output_file,)
         if translation_file is not None:
             args += ' -t %s' % translation_file
-            logger.info("Using %s as translation file", translation_file)
 
         # Finish building the command line we're going to execute and then run it.
         args += " '%s'" % shp
-        logger.debug("Running %s", args)
-        p = subprocess.Popen(
-            args,
-            shell=True,
-            stderr=err,
-            stdout=std
-        )
-
-        retcode = p.wait()
-        if retcode != 0:
-            logger.warning("Conversion of %s might have failed, check stderr-%d.err", shp, run)
+        workqueue.put((run, args, shp))
 
     run += 1
+
+
+# Run one thread for now, running two requires messing around with IDs and making sure we have 
+# no collisions there either.
+for i in range(cpu_count()):
+    worker = WorkerThread(queue=workqueue)
+    threads.append(worker)
+    worker.start()
+
+# Wait for conversions to complete
+workqueue.join()
 
 # Change path from INPUT_DIR to OUTPUT_DIR and conver the filenames
 # to their new converted names so that we can merge them using osmosis
@@ -150,7 +155,7 @@ for osm in osm_files:
     for pattern, cb in postprocess:
         if pattern.match(osm):
             logger.info("Running post-process on %s", osm)
-            cb(osm, batch_id_file)
+            cb(osm)
 
 osmosis_args = ['osmosis']
 for osm in osm_files:
